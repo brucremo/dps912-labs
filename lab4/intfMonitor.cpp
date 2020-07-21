@@ -1,7 +1,7 @@
-// intfMonitor_solution.cpp - An interface monitor
+// ntfMonitor_solution.cpp - An interface monitor
 //
 // 13-Jul-20  M. Watler         Created.
-// 20-Jul-20  H. Kaba           Completed.
+// 21-Jul-20  Bruno Alexander   Lab implemented.
 
 #include <fcntl.h>
 #include <cstring>
@@ -17,26 +17,31 @@ const int MAXBUF=128;
 bool isRunning=false;
 bool isWaiting = true;
 
-static void sigHandler(int sig);
+//Declare your signal handler function prototype
+static void handler(int signalId);
 
 int main(int argc, char *argv[])
 {
-    struct sigaction sigAct;
-    sigAct.sa_handler = sigHandler;
-    sigemptyset(&sigAct.sa_mask);
-    sigAct.sa_flags = 0;
+    //Declare a variable of type struct sigaction
+    struct sigaction sig;
+    sig.sa_handler = handler;
+    sigemptyset(&sig.sa_mask);
+    sig.sa_flags = 0;
 
     char interface[MAXBUF];
     char statPath[MAXBUF*2];
     const char logfile[]="Network.log";//store network data in Network.log
     int retVal=0;
 
-    int err1 = sigaction(SIGUSR1, &sigAct, NULL);
-    int err2 = sigaction(SIGUSR2, &sigAct, NULL);
-    int err3 = sigaction(SIGINT, &sigAct, NULL);
-    int err4 = sigaction(SIGTSTP, &sigAct, NULL);
-    if (err1 < 0 || err2 < 0 || err3 < 0 || err4 < 0 ) {
-       cout << "Cannot create the signal handler" << endl;
+    //Register signal handlers for SIGUSR1, SIGUSR2, ctrl-C and ctrl-Z
+    int action1 = sigaction(SIGUSR1, &sig, NULL);
+    int action2 = sigaction(SIGUSR2, &sig, NULL);
+    int action3 = sigaction(SIGINT, &sig, NULL);
+    int action4 = sigaction(SIGTSTP, &sig, NULL);
+
+    //Ensure there are no errors in registering the handlers
+    if (action1 < 0 || action2 < 0 || action3 < 0 || action4 < 0 ) {
+       cout << "Error registering handlers, exiting..." << endl;
        return -1;
     }
 
@@ -44,6 +49,7 @@ int main(int argc, char *argv[])
     int fd=open(logfile, O_RDWR | O_CREAT | O_APPEND, S_IRUSR | S_IWUSR);
     cout<<"intfMonitor:main: interface:"<<interface<<":  pid:"<<getpid()<<endl;
 
+    //Wait for SIGUSR1 - the start signal from the parent
     pause();
 
     while(isRunning) {
@@ -88,9 +94,9 @@ int main(int argc, char *argv[])
     return 0;
 }
 
-static void sigHandler(int sig)
+static void handler(int signalId)
 {
-    switch(sig) {
+    switch(signalId) {
         case SIGUSR1:
             cout << "intfMonitor: starting up" <<endl;
             isRunning = true;

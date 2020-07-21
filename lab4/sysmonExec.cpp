@@ -1,9 +1,7 @@
-// Lab 4
-// Due Date: July 22, 2020
-// sysmonExec.cpp - A system monitor using fork and exec
+//sysmonExec.cpp - A system monitor using fork and exec
 //
 // 13-Jul-20  M. Watler         Created.
-// 20-Jul-20  H. Kaba           Completed.
+// 21-Jul-20  Bruno Alexander   Lab implemented.
 
 #include <fcntl.h>
 #include <fstream>
@@ -22,7 +20,8 @@ bool isParent = true;//Distinguishes between the parent
                      //process and the child process(es)
 pid_t childPid[NUM];
 
-char *intf[]={"lo", "ens33"};
+//strdup added to suppress warnings
+char *intf[]={ strdup("lo"), strdup("ens33") };
 
 int main()
 {
@@ -52,22 +51,27 @@ int systemMonitor()
     int status=-1;
     pid_t pid=0;
 
+    //Send start signals to the children (SIGUSR1)
     for (int i = 0; i < NUM; i++) {
         if (!(kill (childPid[i], SIGUSR1)))
             cout << "SIGUSR1 sent to " << childPid[i] << endl;
         else if (errno == EPERM)
-            cout << "Operation not permitted." << endl;
+            cout << "Error: not allowed" << endl;
         else
-            cout << childPid[i] << " doesn't exist." << endl;
+            cout << "No Child with PID: " << childPid[i] << endl;
     };
+    
+    //sleep for 30 seconds
     sleep(30);
+
+    //Send stop signals to the children (SIGUSR2)
     for (int i = 0; i < NUM; i++) {
         if (!(kill (childPid[i], SIGUSR2)))
             cout << "SIGUSR2 sent to " << childPid[i] << endl;
         else if (errno == EPERM)
-            cout << "Operation not permitted." << endl;
+            cout << "Error: not allowed" << endl;
         else
-            cout << childPid[i] << " doesn't exist." << endl;
+            cout << "No Child with PID: " << childPid[i] << endl;
     };
 
     //Wait for children to terminate
