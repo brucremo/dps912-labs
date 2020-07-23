@@ -17,7 +17,7 @@ void error(const char *msg)
 int main(int argc, char *argv[])
 {
     char * path = "/tmp/lab5";
-    int sockfd, newsockfd, portno;
+    int sockfd, newsockfd;
     socklen_t clilen;
     char buffer[256];
     char doneStr[5] = "Done";
