@@ -1,3 +1,7 @@
+// client.cpp - A simple socket client
+//
+// 22-Jul-20  Bruno Alexander   Lab implemented.
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>

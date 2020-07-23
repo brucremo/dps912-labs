@@ -1,3 +1,6 @@
+// server.cpp - A simple socket server
+//
+// 22-Jul-20  Bruno Alexander   Lab implemented.
 
 #include <stdio.h>
 #include <stdlib.h>
