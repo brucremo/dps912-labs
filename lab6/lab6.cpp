@@ -15,6 +15,10 @@ using namespace std;
 const int ARGUMENT_LENGTH = 64;
 
 int main (int argc, char *argv[]) {
+    if(argc < 3){
+        cout << "2 arguments are required, please try again" << endl;
+        return -1;
+    }
 
     char argument1[ARGUMENT_LENGTH];
     char argument2[ARGUMENT_LENGTH];
