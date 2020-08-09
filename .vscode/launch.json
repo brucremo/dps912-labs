@@ -9,12 +9,16 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${fileDirname}/${fileBasenameNoExtension}",
-            "args": [],
+            "args": ["9090"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],
             "externalConsole": false,
             "MIMode": "gdb",
+            "symbolLoadInfo": {
+                "loadAll": true,
+                "exceptionList": ""
+            },
             "setupCommands": [
                 {
                     "description": "Enable pretty-printing for gdb",
